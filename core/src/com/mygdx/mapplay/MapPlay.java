@@ -1,102 +1,1 @@
-package com.mygdx.mapplay;
-
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapRenderer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-
-public class MapPlay extends ApplicationAdapter implements InputProcessor {
-    Texture img;
-    TiledMap tiledMap;
-    OrthographicCamera camera;
-    TiledMapRenderer tiledMapRenderer;
-    Stage stage;
-    Image dude;
-
-    @Override
-    public void create() {
-        stage = new Stage();
-        dude = new Image();
-        float w = Gdx.graphics.getWidth();
-        float h = Gdx.graphics.getHeight();
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, 500, 500);
-        camera.translate(0, 2700);
-        camera.update();
-        tiledMap = new TmxMapLoader().load("firstmap.tmx");
-        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
-        Gdx.input.setInputProcessor(this);
-    }
-
-    @Override
-    public void render() {
-        Gdx.gl.glClearColor(0, 0, 0, 1);
-        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        camera.update();
-        tiledMapRenderer.setView(camera);
-        tiledMapRenderer.render();
-    }
-
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyUp(int keycode) {
-        if (keycode == Input.Keys.LEFT)
-            camera.translate(-100, 0);
-        if (keycode == Input.Keys.RIGHT)
-            camera.translate(100, 0);
-        if (keycode == Input.Keys.UP)
-            camera.translate(0, -100);
-        if (keycode == Input.Keys.DOWN)
-            camera.translate(0, 100);
-        if (keycode == Input.Keys.NUM_1)
-            tiledMap.getLayers().get(0).setVisible(!tiledMap.getLayers().get(0).isVisible());
-        if (keycode == Input.Keys.NUM_2)
-            tiledMap.getLayers().get(1).setVisible(!tiledMap.getLayers().get(1).isVisible());
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
-}
+package com.mygdx.mapplay;import com.badlogic.gdx.ApplicationAdapter;import com.badlogic.gdx.Gdx;import com.badlogic.gdx.Input;import com.badlogic.gdx.InputProcessor;import com.badlogic.gdx.graphics.GL20;import com.badlogic.gdx.graphics.OrthographicCamera;import com.badlogic.gdx.graphics.Texture;import com.badlogic.gdx.graphics.g2d.Sprite;import com.badlogic.gdx.graphics.g2d.SpriteBatch;import com.badlogic.gdx.graphics.g2d.TextureAtlas;import com.badlogic.gdx.graphics.g2d.TextureRegion;import com.badlogic.gdx.maps.tiled.TiledMap;import com.badlogic.gdx.maps.tiled.TiledMapRenderer;import com.badlogic.gdx.maps.tiled.TmxMapLoader;import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;import com.badlogic.gdx.scenes.scene2d.Stage;import com.badlogic.gdx.scenes.scene2d.ui.Image;public class MapPlay extends ApplicationAdapter implements InputProcessor {    Texture img;    TiledMap tiledMap;    OrthographicCamera camera;    TiledMapRenderer tiledMapRenderer;    Stage stage;    Image dude;    TextureRegion rgn;    int fDudeX, fDudeY;    int nx, ny;    SpriteBatch sb;    Texture texture;    Sprite sDude;    @Override    public void create() {//http://www.gamefromscratch.com/post/2014/04/16/LibGDX-Tutorial-11-Tiled-Maps-Part-1-Simple-Orthogonal-Maps.aspx        //http://www.gamefromscratch.com/post/2014/04/15/A-quick-look-at-Tiled-An-open-source-2D-level-editor.aspx        //Thanks Mike from gamefromscratch, great tutorials to get me up and running with tiled :D        stage = new Stage();        dude = new Image();        float w = Gdx.graphics.getWidth();        float h = Gdx.graphics.getHeight();        TextureAtlas atlas = new TextureAtlas(Gdx.files.internal("characters.pack"));        rgn = atlas.findRegion("guyfront");        dude = new Image(rgn);        sb = new SpriteBatch();        sDude = new Sprite(rgn);        sDude.setBounds(375,(h-200), 125, 175);        camera = new OrthographicCamera();        camera.setToOrtho(false, 500, 500);      //  camera.translate(0, 2700);        camera.update();        tiledMap = new TmxMapLoader().load("firstmap.tmx");        tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);        Gdx.input.setInputProcessor(this);        dude.setHeight(500);        dude.setWidth(500);        stage.addActor(dude);        dude.setX(fDudeX);        dude.setY(fDudeY);    }    @Override    public void render() {        camera.position.set((fDudeX+265), (fDudeY+2950), 100);        //   camera.position.set(dude.getX(), dude.getY(), 0);        Gdx.gl.glClearColor(0, 0, 0, 1);        Gdx.gl.glBlendFunc(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);     //   super.render();     //   stage.draw();        camera.update();        tiledMapRenderer.setView(camera);        tiledMapRenderer.render();        sb.begin();        sDude.draw(sb);        sb.end();    }    @Override    public boolean keyDown(int keycode) {        return false;    }    @Override    public boolean keyUp(int keycode) {        if (keycode == Input.Keys.LEFT)            camera.translate(-100, 0);        if (keycode == Input.Keys.RIGHT)            camera.translate(100, 0);        if (keycode == Input.Keys.UP)            camera.translate(0, -100);        if (keycode == Input.Keys.DOWN)            camera.translate(0, 100);        if (keycode == Input.Keys.NUM_1)            tiledMap.getLayers().get(0).setVisible(!tiledMap.getLayers().get(0).isVisible());        if (keycode == Input.Keys.NUM_2)            tiledMap.getLayers().get(1).setVisible(!tiledMap.getLayers().get(1).isVisible());        return false;    }    @Override    public boolean keyTyped(char character) {        return false;    }    @Override    public boolean touchDown(int screenX, int screenY, int pointer, int button) {        return false;    }    @Override    public boolean touchUp(int screenX, int screenY, int pointer, int button) {        return false;    }    @Override    public boolean touchDragged(int screenX, int screenY, int pointer) {        return false;    }    @Override    public boolean mouseMoved(int screenX, int screenY) {return false;  }    @Override    public boolean scrolled(int amount) {        return false;    }}
